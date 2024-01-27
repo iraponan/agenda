@@ -3,12 +3,12 @@ import 'package:agenda/models/contact.dart';
 import 'package:agenda/models/db/contactTable.dart';
 import 'package:sqflite/sqflite.dart';
 
-class Contacts {
-  static final Contacts _instance = Contacts.internal();
+class DbContacts {
+  static final DbContacts _instance = DbContacts.internal();
 
-  factory Contacts() => _instance;
+  factory DbContacts() => _instance;
 
-  Contacts.internal();
+  DbContacts.internal();
 
   Future<Contact> saveContatc(Contact contact) async {
     Database dbContact = await InitDb.db;
