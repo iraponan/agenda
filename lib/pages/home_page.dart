@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:agenda/models/contact.dart';
+import 'package:agenda/pages/contact_page.dart';
 import 'package:agenda/repositories/db_contacts.dart';
 import 'package:flutter/material.dart';
 
@@ -16,17 +17,6 @@ class _HomePageState extends State<HomePage> {
   List<Contact> contacts = <Contact>[];
 
   @override
-  void initState() {
-    super.initState();
-
-    dbContacts.getAllContatcs().then((list) {
-      setState(() {
-        contacts = list;
-      });
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -37,10 +27,12 @@ class _HomePageState extends State<HomePage> {
       ),
       backgroundColor: Colors.white,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: const Icon(Icons.add),
+        onPressed: () {
+          _showContactPage();
+        },
         backgroundColor: Colors.red,
         foregroundColor: Colors.white,
+        child: const Icon(Icons.add),
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(8.0),
@@ -103,6 +95,43 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
+      onTap: () {
+        _showContactPage(contact: contacts[index]);
+      },
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getAllContacts();
+  }
+
+  void _getAllContacts() {
+    dbContacts.getAllContatcs().then((list) {
+      setState(() {
+        contacts = list;
+      });
+    });
+  }
+
+  void _showContactPage({Contact? contact}) async {
+    final recContact = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ContactPage(
+          contact: contact,
+        ),
+      ),
+    );
+
+    if (recContact != null) {
+      if (contact != null) {
+        await dbContacts.updateContatc(recContact);
+      } else {
+        await dbContacts.saveContatc(recContact);
+      }
+      _getAllContacts();
+    }
   }
 }

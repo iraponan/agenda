@@ -27,10 +27,10 @@ class _ContactPageState extends State<ContactPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red,
+        foregroundColor: Colors.white,
         title: Text(
           _editedContact.name ?? 'Novo Contato',
           style: const TextStyle(
-            color: Colors.white,
           ),
         ),
         centerTitle: true,
