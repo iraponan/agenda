@@ -1,9 +1,15 @@
+import 'package:agenda/pages/contact_page.dart';
 import 'package:agenda/pages/home_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MaterialApp(
+  runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: HomePage(),
+    home: const HomePage(),
+    initialRoute: '/home',
+    routes: <String, WidgetBuilder> {
+      '/home' : (BuildContext context) => const HomePage(),
+      '/contact_page' : (BuildContext context) => const ContactPage(),
+    },
   ));
 }

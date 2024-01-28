@@ -26,90 +26,99 @@ class _ContactPageState extends State<ContactPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.red,
-        foregroundColor: Colors.white,
-        title: Text(
-          _editedContact.name ?? 'Novo Contato',
-          style: const TextStyle(
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (bool didPop) {
+        if (didPop) {
+          return;
+        }
+        _requestPop();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.red,
+          foregroundColor: Colors.white,
+          title: Text(
+            _editedContact.name ?? 'Novo Contato',
+            style: const TextStyle(),
+          ),
+          centerTitle: true,
+        ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.red,
+          onPressed: () {
+            if ((_editedContact.name ?? '').isNotEmpty) {
+              Navigator.pop(context, _editedContact);
+            } else {
+              FocusScope.of(context).requestFocus(_nameFocus);
+            }
+          },
+          child: const Icon(
+            Icons.save,
+            color: Colors.white,
           ),
         ),
-        centerTitle: true,
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.red,
-        onPressed: () {
-          if ((_editedContact.name ?? '').isNotEmpty) {
-            Navigator.pop(context, _editedContact);
-          } else {
-            FocusScope.of(context).requestFocus(_nameFocus);
-          }
-        },
-        child: const Icon(
-          Icons.save,
-          color: Colors.white,
-        ),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            GestureDetector(
-              child: Container(
-                width: 150,
-                height: 150,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                    image: _editedContact.img != null
-                        ? FileImage(File(_editedContact.img!))
-                        : const AssetImage('assets/images/person.png')
-                    as ImageProvider,
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              GestureDetector(
+                child: Container(
+                  width: 150,
+                  height: 150,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: _editedContact.img != null
+                          ? FileImage(File(_editedContact.img!))
+                          : const AssetImage('assets/images/person.png')
+                              as ImageProvider,
+                    ),
                   ),
                 ),
               ),
-            ),
-            TextField(
-              decoration: const InputDecoration(
-                labelText: 'Nome',
+              TextField(
+                decoration: const InputDecoration(
+                  labelText: 'Nome',
+                ),
+                onChanged: (text) {
+                  _userEdited = true;
+                  setState(() {
+                    _editedContact.name = text;
+                  });
+                },
+                textCapitalization: TextCapitalization.words,
+                controller: _nameController,
+                focusNode: _nameFocus,
               ),
-              onChanged: (text) {
-                _userEdited = true;
-                setState(() {
-                  _editedContact.name = text;
-                });
-              },
-              controller: _nameController,
-              focusNode: _nameFocus,
-            ),
-            TextField(
-              decoration: const InputDecoration(
-                labelText: 'Email',
+              TextField(
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                ),
+                onChanged: (text) {
+                  _userEdited = true;
+                  _editedContact.email = text;
+                },
+                keyboardType: TextInputType.emailAddress,
+                controller: _emailController,
               ),
-              onChanged: (text) {
-                _userEdited = true;
-                _editedContact.email = text;
-              },
-              keyboardType: TextInputType.emailAddress,
-              controller: _emailController,
-            ),
-            TextField(
-              decoration: const InputDecoration(
-                labelText: 'Telefone',
+              TextField(
+                decoration: const InputDecoration(
+                  labelText: 'Telefone',
+                ),
+                onChanged: (text) {
+                  _userEdited = true;
+                  _editedContact.phone = text;
+                },
+                keyboardType: TextInputType.phone,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  TelefoneInputFormatter()
+                ],
+                controller: _phoneController,
               ),
-              onChanged: (text) {
-                _userEdited = true;
-                _editedContact.phone = text;
-              },
-              keyboardType: TextInputType.phone,
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-                TelefoneInputFormatter()
-              ],
-              controller: _phoneController,
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -125,6 +134,40 @@ class _ContactPageState extends State<ContactPage> {
       _nameController.text = _editedContact.name ?? '';
       _emailController.text = _editedContact.email ?? '';
       _phoneController.text = _editedContact.phone ?? '';
+    }
+  }
+
+  Future<bool> _requestPop() {
+    if (_userEdited) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Descartat Alterações'),
+            content:
+            const Text('Se sair as alterações feitas serão descartadas.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Cancelar'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+                child: const Text('Sim'),
+              ),
+            ],
+          );
+        },
+      );
+      return Future.value(false);
+    } else {
+      Navigator.pop(context);
+      return Future.value(true);
     }
   }
 }

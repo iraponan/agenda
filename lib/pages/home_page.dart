@@ -122,6 +122,7 @@ class _HomePageState extends State<HomePage> {
         builder: (context) => ContactPage(
           contact: contact,
         ),
+        settings: const RouteSettings(name: '/contact_page'),
       ),
     );
 
