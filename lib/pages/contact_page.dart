@@ -22,6 +22,8 @@ class _ContactPageState extends State<ContactPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
+  final FocusNode _nameFocus = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +39,13 @@ class _ContactPageState extends State<ContactPage> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.red,
-        onPressed: () {},
+        onPressed: () {
+          if ((_editedContact.name ?? '').isNotEmpty) {
+            Navigator.pop(context, _editedContact);
+          } else {
+            FocusScope.of(context).requestFocus(_nameFocus);
+          }
+        },
         child: const Icon(
           Icons.save,
           color: Colors.white,
@@ -73,6 +81,7 @@ class _ContactPageState extends State<ContactPage> {
                 });
               },
               controller: _nameController,
+              focusNode: _nameFocus,
             ),
             TextField(
               decoration: const InputDecoration(
