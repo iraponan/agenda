@@ -53,12 +53,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _contactCard(BuildContext context, int index) {
-    int id = contacts[index].id ?? 0;
-    String name = contacts[index].name ?? '';
-    String email = contacts[index].email ?? '';
-    String phone = contacts[index].phone ?? '';
-    String img = contacts[index].img ?? '';
-
     return GestureDetector(
       child: Card(
         child: Padding(
@@ -84,20 +78,20 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      name,
+                      contacts[index].name ?? '',
                       style: const TextStyle(
                         fontSize: 22.0,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
-                      email,
+                      contacts[index].email ?? '',
                       style: const TextStyle(
                         fontSize: 18.0,
                       ),
                     ),
                     Text(
-                      phone,
+                      contacts[index].phone ?? '',
                       style: const TextStyle(
                         fontSize: 18.0,
                       ),
