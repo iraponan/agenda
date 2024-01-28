@@ -4,6 +4,7 @@ import 'package:agenda/models/contact.dart';
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ContactPage extends StatefulWidget {
   const ContactPage({super.key, this.contact});
@@ -76,6 +77,98 @@ class _ContactPageState extends State<ContactPage> {
                     ),
                   ),
                 ),
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      return BottomSheet(
+                        onClosing: () {},
+                        builder: (context) {
+                          return Container(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          ImagePicker()
+                                              .pickImage(
+                                                  source:
+                                                      ImageSource.gallery)
+                                              .then((file) {
+                                            if (file == null) {
+                                              return;
+                                            } else {
+                                              setState(() {
+                                                _userEdited = true;
+                                                _editedContact.img =
+                                                    file.path;
+                                              });
+                                            }
+                                          });
+                                        },
+                                        child: const Icon(
+                                          Icons.file_open,
+                                          color: Colors.red,
+                                          size: 50.0,
+                                        ),
+                                      ),
+                                      const Text(
+                                        'Galeria',
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          ImagePicker()
+                                              .pickImage(
+                                                  source:
+                                                      ImageSource.camera)
+                                              .then((file) {
+                                            if (file == null) {
+                                              return;
+                                            } else {
+                                              setState(() {
+                                                _userEdited = true;
+                                                _editedContact.img =
+                                                    file.path;
+                                              });
+                                            }
+                                          });
+                                        },
+                                        child: const Icon(
+                                          Icons.camera,
+                                          color: Colors.red,
+                                          size: 50.0,
+                                        ),
+                                      ),
+                                      const Text(
+                                        'Câmera',
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
               ),
               TextField(
                 decoration: const InputDecoration(
@@ -145,7 +238,7 @@ class _ContactPageState extends State<ContactPage> {
           return AlertDialog(
             title: const Text('Descartat Alterações'),
             content:
-            const Text('Se sair as alterações feitas serão descartadas.'),
+                const Text('Se sair as alterações feitas serão descartadas.'),
             actions: [
               TextButton(
                 onPressed: () {

@@ -4,6 +4,7 @@ import 'package:agenda/models/contact.dart';
 import 'package:agenda/pages/contact_page.dart';
 import 'package:agenda/repositories/db_contacts.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -120,9 +121,7 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (context) {
         return BottomSheet(
-          onClosing: () {
-
-          },
+          onClosing: () {},
           builder: (context) {
             return Container(
               padding: const EdgeInsets.all(8.0),
@@ -131,52 +130,83 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: TextButton(
-                      onPressed: () {
-
-                      },
-                      child: const Text(
-                        'Ligar',
-                        style: TextStyle(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.phone,
                           color: Colors.red,
-                          fontSize: 20.0,
                         ),
-                      ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            launchUrl(
+                                Uri.parse('tel:${contacts[index].phone}'));
+                          },
+                          child: const Text(
+                            'Ligar',
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 20.0,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+                  const Divider(),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        _showContactPage(contact: contacts[index]);
-                      },
-                      child: const Text(
-                        'Editar',
-                        style: TextStyle(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.edit,
                           color: Colors.red,
-                          fontSize: 20.0,
                         ),
-                      ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            _showContactPage(contact: contacts[index]);
+                          },
+                          child: const Text(
+                            'Editar',
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 20.0,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+                  const Divider(),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: TextButton(
-                      onPressed: () {
-                        dbContacts.deleteContatc(contacts[index].id!);
-                        setState(() {
-                          contacts.removeAt(index);
-                          Navigator.pop(context);
-                        });
-                      },
-                      child: const Text(
-                        'Excluir',
-                        style: TextStyle(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.delete,
                           color: Colors.red,
-                          fontSize: 20.0,
                         ),
-                      ),
+                        TextButton(
+                          onPressed: () {
+                            dbContacts.deleteContatc(contacts[index].id!);
+                            setState(() {
+                              contacts.removeAt(index);
+                              Navigator.pop(context);
+                            });
+                          },
+                          child: const Text(
+                            'Excluir',
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 20.0,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

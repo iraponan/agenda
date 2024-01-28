@@ -6,7 +6,6 @@ void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     home: const HomePage(),
-    initialRoute: '/home',
     routes: <String, WidgetBuilder> {
       '/home' : (BuildContext context) => const HomePage(),
       '/contact_page' : (BuildContext context) => const ContactPage(),
