@@ -77,6 +77,7 @@ class _ContactPageState extends State<ContactPage> {
                           ? FileImage(File(_editedContact.img!))
                           : const AssetImage('assets/images/person.png')
                               as ImageProvider,
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),

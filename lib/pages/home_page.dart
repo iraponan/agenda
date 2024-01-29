@@ -78,6 +78,7 @@ class _HomePageState extends State<HomePage> {
                         ? FileImage(File(contacts[index].img!))
                         : const AssetImage('assets/images/person.png')
                             as ImageProvider,
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
