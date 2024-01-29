@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:agenda/enums/order_options.dart';
 import 'package:agenda/models/contact.dart';
 import 'package:agenda/pages/contact_page.dart';
 import 'package:agenda/repositories/db_contacts.dart';
@@ -25,6 +26,21 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.red,
         foregroundColor: Colors.white,
         centerTitle: true,
+        actions: [
+          PopupMenuButton<OrderOptions>(
+            itemBuilder: (context) => <PopupMenuEntry<OrderOptions>>[
+              const PopupMenuItem<OrderOptions>(
+                value: OrderOptions.orderAZ,
+                child: Text('Ordernat de A-Z'),
+              ),
+              const PopupMenuItem<OrderOptions>(
+                value: OrderOptions.orderZA,
+                child: Text('Ordernat de Z-A'),
+              ),
+            ],
+            onSelected: _orderList,
+          ),
+        ],
       ),
       backgroundColor: Colors.white,
       floatingActionButton: FloatingActionButton(
@@ -65,31 +81,39 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      contacts[index].name ?? '',
-                      style: const TextStyle(
-                        fontSize: 22.0,
-                        fontWeight: FontWeight.bold,
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        contacts[index].name ?? '',
+                        style: const TextStyle(
+                          fontSize: 22.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                    Text(
-                      contacts[index].email ?? '',
-                      style: const TextStyle(
-                        fontSize: 18.0,
+                      Text(
+                        contacts[index].email ?? '',
+                        style: const TextStyle(
+                          fontSize: 18.0,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                    Text(
-                      contacts[index].phone ?? '',
-                      style: const TextStyle(
-                        fontSize: 18.0,
+                      Text(
+                        contacts[index].phone ?? '',
+                        style: const TextStyle(
+                          fontSize: 18.0,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -237,5 +261,22 @@ class _HomePageState extends State<HomePage> {
       }
       _getAllContacts();
     }
+  }
+
+  void _orderList(OrderOptions result) {
+    setState(() {
+      switch(result) {
+        case OrderOptions.orderAZ:
+          contacts.sort((a, b) {
+            return a.name!.toLowerCase().compareTo(b.name!.toLowerCase());
+          });
+          break;
+        case OrderOptions.orderZA:
+          contacts.sort((a, b) {
+            return b.name!.toLowerCase().compareTo(a.name!.toLowerCase());
+          });
+          break;
+      }
+    });
   }
 }

@@ -25,6 +25,8 @@ class _ContactPageState extends State<ContactPage> {
 
   final FocusNode _nameFocus = FocusNode();
 
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -48,7 +50,8 @@ class _ContactPageState extends State<ContactPage> {
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.red,
           onPressed: () {
-            if ((_editedContact.name ?? '').isNotEmpty) {
+            if (_formKey.currentState!.validate()) {
+              _formKey = GlobalKey<FormState>();
               Navigator.pop(context, _editedContact);
             } else {
               FocusScope.of(context).requestFocus(_nameFocus);
@@ -98,16 +101,14 @@ class _ContactPageState extends State<ContactPage> {
                                           Navigator.pop(context);
                                           ImagePicker()
                                               .pickImage(
-                                                  source:
-                                                      ImageSource.gallery)
+                                                  source: ImageSource.gallery)
                                               .then((file) {
                                             if (file == null) {
                                               return;
                                             } else {
                                               setState(() {
                                                 _userEdited = true;
-                                                _editedContact.img =
-                                                    file.path;
+                                                _editedContact.img = file.path;
                                               });
                                             }
                                           });
@@ -134,16 +135,14 @@ class _ContactPageState extends State<ContactPage> {
                                           Navigator.pop(context);
                                           ImagePicker()
                                               .pickImage(
-                                                  source:
-                                                      ImageSource.camera)
+                                                  source: ImageSource.camera)
                                               .then((file) {
                                             if (file == null) {
                                               return;
                                             } else {
                                               setState(() {
                                                 _userEdited = true;
-                                                _editedContact.img =
-                                                    file.path;
+                                                _editedContact.img = file.path;
                                               });
                                             }
                                           });
@@ -170,45 +169,100 @@ class _ContactPageState extends State<ContactPage> {
                   );
                 },
               ),
-              TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Nome',
+              Form(
+                key: _formKey,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red, width: 2),
+                          ),
+                          hintText: 'Fulano Sicrano',
+                          labelText: 'Nome',
+                          labelStyle: TextStyle(
+                            color: Colors.black,
+                          ),
+                        ),
+                        onChanged: (text) {
+                          _userEdited = true;
+                          setState(() {
+                            _editedContact.name = text;
+                          });
+                        },
+                        textCapitalization: TextCapitalization.words,
+                        controller: _nameController,
+                        focusNode: _nameFocus,
+                        validator: (value) {
+                          if ((value ?? '').isEmpty) {
+                            return 'Insira seu nome!';
+                          } else {
+                            return null;
+                          }
+                        },
+                      ),
+                      const Divider(
+                        height: 8,
+                        thickness: 0,
+                      ),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red, width: 2),
+                          ),
+                          hintText: 'seuemail@seuemail.com',
+                          labelText: 'Email',
+                          labelStyle: TextStyle(
+                            color: Colors.black,
+                          ),
+                        ),
+                        onChanged: (text) {
+                          _userEdited = true;
+                          _editedContact.email = text;
+                        },
+                        keyboardType: TextInputType.emailAddress,
+                        controller: _emailController,
+                      ),
+                      const Divider(
+                        height: 8,
+                        thickness: 0,
+                      ),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red, width: 2),
+                          ),
+                          hintText: '(99) 99999-9999',
+                          labelText: 'Telefone',
+                          labelStyle: TextStyle(
+                            color: Colors.black,
+                          ),
+                        ),
+                        onChanged: (text) {
+                          _userEdited = true;
+                          _editedContact.phone = text;
+                        },
+                        keyboardType: TextInputType.phone,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          TelefoneInputFormatter()
+                        ],
+                        controller: _phoneController,
+                        validator: (value) {
+                          if ((value ?? '').isEmpty) {
+                            return 'Informe seu Telefone!';
+                          } else {
+                            return null;
+                          }
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-                onChanged: (text) {
-                  _userEdited = true;
-                  setState(() {
-                    _editedContact.name = text;
-                  });
-                },
-                textCapitalization: TextCapitalization.words,
-                controller: _nameController,
-                focusNode: _nameFocus,
-              ),
-              TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                ),
-                onChanged: (text) {
-                  _userEdited = true;
-                  _editedContact.email = text;
-                },
-                keyboardType: TextInputType.emailAddress,
-                controller: _emailController,
-              ),
-              TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Telefone',
-                ),
-                onChanged: (text) {
-                  _userEdited = true;
-                  _editedContact.phone = text;
-                },
-                keyboardType: TextInputType.phone,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  TelefoneInputFormatter()
-                ],
-                controller: _phoneController,
               ),
             ],
           ),

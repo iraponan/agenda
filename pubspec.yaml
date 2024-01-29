@@ -39,6 +39,7 @@ dependencies:
   brasil_fields: ^1.14.2
   url_launcher: ^6.2.4
   image_picker: ^1.0.7
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
@@ -95,3 +96,11 @@ flutter:
   assets:
     - assets/images/person.png
 
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icons/icon.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  web:
+    generate: true
+    image_path: "assets/icons/icon.png"
